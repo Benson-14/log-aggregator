@@ -37,6 +37,14 @@ func (s *MemoryStorage) Len() int {
 	return len(s.entries)
 }
 
+func (s *MemoryStorage) All() []*parser.LogEntry {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	result := make([]*parser.LogEntry, len(s.entries))
+	copy(result, s.entries)
+	return result
+}
+
 func (s *MemoryStorage) QueryTimeRange(start, end time.Time) []*parser.LogEntry {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -50,9 +58,9 @@ func (s *MemoryStorage) QueryTimeRange(start, end time.Time) []*parser.LogEntry 
 	return results
 }
 
-func (s *MemoryStorage) QueryByLevel(level string) []*parser.LogEntry {
+func (s *MemoryStorage) QueryLevel(level string) []*parser.LogEntry {
 	s.mu.RLock()
-	defer s.mu.Unlock()
+	defer s.mu.RUnlock()
 
 	var results []*parser.LogEntry
 	for _, entry := range s.entries {

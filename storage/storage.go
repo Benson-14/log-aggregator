@@ -22,6 +22,9 @@ type Storage interface {
 	// Search performs a full-text search over log messages and returns matching entries.
 	Search(text string) []*parser.LogEntry
 
+	// All returns every stored entry in insertion order.
+	All() []*parser.LogEntry
+
 	// CountByLevel returns a map from log-level string to entry count.
 	CountByLevel() map[string]int
 
